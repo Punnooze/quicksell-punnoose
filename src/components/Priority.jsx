@@ -19,9 +19,9 @@ function Priority({ data, ordering }) {
 
   const sortData = (tickets) => {
     if (ordering === 'priority') {
-      return tickets.sort((a, b) => b.priority - a.priority); // Descending by priority
+      return tickets.sort((a, b) => b.priority - a.priority); 
     } else if (ordering === 'title') {
-      return tickets.sort((a, b) => a.title.localeCompare(b.title)); // Alphabetical by title
+      return tickets.sort((a, b) => a.title.localeCompare(b.title)); 
     }
     return tickets;
   };

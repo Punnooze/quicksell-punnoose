@@ -8,39 +8,36 @@ import display from './assets/Display.svg';
 import downArrow from './assets/down.svg';
 
 function App() {
-  const [data, setData] = useState([]); // The data containing tickets and user info
-  const [grouping, setGrouping] = useState('status'); // Default grouping by 'status'
-  const [ordering, setOrdering] = useState('priority'); // Default ordering by 'priority'
-  const [isOpen, setIsOpen] = useState(false); // For dropdown visibility
-  const dropdownRef = useRef(null); // To close dropdown on outside click
+  const [data, setData] = useState([]);
+  const [grouping, setGrouping] = useState('status');
+  const [ordering, setOrdering] = useState('priority');
+  const [isOpen, setIsOpen] = useState(false);
+  const dropdownRef = useRef(null);
   const [users, setUsers] = useState([]);
   useEffect(() => {
-    // Fetch tickets and user data from API
     axios
       .get('https://api.quicksell.co/v1/internal/frontend-assignment')
       .then((response) => {
         if (response.data.users && response.data.tickets) {
           const tickets = response.data.tickets;
           const users = response.data.users;
-          setUsers(users); // Set users in state
-          // Create a mapping of userId to user details
+          setUsers(users);
           console.log(users);
           const userMap = users.reduce((acc, user) => {
             acc[user.id] = { name: user.name, available: user.available };
             return acc;
           }, {});
 
-          // Enrich tickets with user data
           const enrichedData = tickets.map((ticket) => {
             const user = userMap[ticket.userId] || {};
             return {
               ...ticket,
-              name: user.name || 'Unknown', // Fallback to 'Unknown' if user not found
-              available: user.available || false, // Fallback to false if user not found
+              name: user.name || 'Unknown',
+              available: user.available || false,
             };
           });
 
-          setData(enrichedData); // Set enriched data in state
+          setData(enrichedData);
         }
       })
       .catch((error) => {
@@ -49,7 +46,6 @@ function App() {
   }, []);
 
   useEffect(() => {
-    // Close the dropdown when clicking outside of it
     function handleClickOutside(event) {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
         setIsOpen(false);
@@ -111,9 +107,7 @@ function App() {
       {grouping === 'user' && (
         <User data={data} ordering={ordering} users={users} />
       )}
-      {/* Render User component */}
       {grouping === 'priority' && <Priority data={data} ordering={ordering} />}
-      {/* Render Priority component */}
     </div>
   );
 }
